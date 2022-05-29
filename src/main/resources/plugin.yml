@@ -1,0 +1,6 @@
+name: Chunk-Pregen
+version: 0.1.0
+main: io.github.gaming32.chunkpregen.canyon.ChunkPregenPlugin
+commands:
+  pregen:
+    description: Pregenerates chunks

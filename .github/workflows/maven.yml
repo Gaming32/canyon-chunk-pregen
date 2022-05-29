@@ -1,0 +1,38 @@
+name: maven
+on: [pull_request, push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/gh-pages'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Checkout Canyon
+        uses: actions/checkout@v2
+        with:
+          repository: canyonmodded/canyon
+          submodules: recursive
+          path: canyon
+      - name: Setup Git
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "actions-user"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2.1.0
+        with:
+          java-version: 17
+          distribution: zulu
+      - name: Install Canyon
+        run: |
+          cd canyon
+          chmod +x canyon
+          ./canyon p
+          mvn clean install
+          cd ..
+      - name: Build with Maven
+        run: mvn clean install
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: canyon-chunk-pregen-jar-artifact
+          path: target/canyon-chunk-pregen-*.jar
